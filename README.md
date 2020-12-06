@@ -1,11 +1,11 @@
 # BDSJSR2
-DotNet版JS插件加载平台
+DotNet version JS plug-in loading platform
 
-#### 使用方式
-csr.dll以及其依赖的相关dll文件放置入BDS主程序所在的CSR文件夹下，js插件放置入NETJS文件夹内加载即可。
+#### How to use
+csr.dll and its dependent related dll files are placed in the CSR folder where the BDS main program is located, and the js plug-in is placed in the NETJS folder and loaded.
 
-如何编译：
-使用Visual Studio打开本工程，管理本工程nuget包，搜索并安装microsoft.ClearScript包后重新生成即可。
+How to compile:
+Use Visual Studio to open this project, manage the NuGet package of this project, search and install the microsoft.ClearScript package and then regenerate it.
 
 #### Commercial License
 MIT
