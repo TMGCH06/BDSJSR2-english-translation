@@ -724,7 +724,7 @@ namespace BDSJSR2
             {
                 if (!Directory.Exists(JSPATH))
                 {
-                    Console.WriteLine("未检测到netjs插件库。请将js文件放置入BDS所在目录的NETJS文件夹内。");
+                    Console.WriteLine("Scripts are not found, make sure you put them in NETJS folder!");
                     return;
                 }
                 string[] jss = Directory.GetFiles(JSPATH, "*.js");
@@ -734,7 +734,7 @@ namespace BDSJSR2
                     foreach (string n in jss)
                     {
                         jsfiles[n] = File.ReadAllText(n);
-                        Console.WriteLine("[JSR] 读取 " + n);
+                        Console.WriteLine("[JSR] Running " + n);
                     }
                     foreach (string n in jss)
                     {
@@ -769,7 +769,7 @@ namespace CSR
         /// <param name="api">MC相关调用方法</param>
         public static void onStart(MCCSAPI api)
         {
-            Console.WriteLine("[JSR] Net版JS加载平台已装载。");
+            Console.WriteLine("[JSR] JSRunner for BDSNetrunner by zhkj-liuxiaohua, translation by TMGCH06");
             // TODO 此接口为必要实现
             BDSJSR2.Program.init(api);
         }
