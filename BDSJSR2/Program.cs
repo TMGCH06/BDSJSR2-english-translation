@@ -724,7 +724,7 @@ namespace BDSJSR2
             {
                 if (!Directory.Exists(JSPATH))
                 {
-                    Console.WriteLine("Scripts are not found, make sure you put them in NETJS folder!");
+                    Console.WriteLine("[JSR] Scripts are not found, make sure you put them in NETJS folder!");
                     return;
                 }
                 string[] jss = Directory.GetFiles(JSPATH, "*.js");
