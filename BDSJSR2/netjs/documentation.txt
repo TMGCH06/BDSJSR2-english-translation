@@ -1,0 +1,481 @@
+ 1. Description:
+
+This plug-in platform uses v8 engine as js interpretation execution tool. The listener registration mechanism is used throughout to complete the processing of specific events.
+
+2. API documentation:
+
+/******************************** JSAPI description ********************************/
+
+// Name：fileReadAllText
+// Function: File input streaming, reading text information
+// Number of parameters: 1
+// Parameter type: string
+// Detailed parameter explanation: fname - file name (relative to BDS location)
+// Return value: string
+[Example] let t = fileReadAllText('outjs.js')
+
+// Name：fileWriteAllText
+// Function: Writes a new string into the file output stream
+// Number of parameters：2
+// Parameter type: string, string
+// Detailed parameters: fname - file name (relative to BDS location), content - text
+// Return value: whether the write was successful
+[Example] let w = fileWriteAllText('jslog.txt', 'example text')
+
+// Name：fileWriteLine
+// Function: Appends a line of string to the file output stream
+// Number of parameters：2
+// Parameter type: string, string
+// Detailed parameters: fname - file name (relative to BDS location), content - additional content
+// Return value: whether the write was successful
+[Example] let w = fileWriteLine('jslog.txt', 'example line')
+
+// Name：log
+// Function: prints messages on standard output stream
+// Nummber of parameters：1
+// Parameter type: string
+// Detailed parameters: output to the standard stream string
+[Example] log('Hello world!')
+
+// Name：logout
+// Function: Sends a command output message (can be parsed)
+// Number of parameters：1
+// Parameter type: string
+// Detailed parameter explanation: cmdout - command output string to be sent
+[Example] logout('Execution result = correct')
+
+// Name：TimeNow
+// Function: Returns a string of current time
+// Number of parameters: 0
+// Return value: string
+[Example] let t = TimeNow()
+
+// Name：setShareData
+// Function: saves shared data
+// Number of parameters: 2
+// Parameter type: string, data/function object
+// Detailed parameter explanation: key - keyword, value - shared data
+[Example] setShareData('TEXT_HELLO', 'Hello world!')
+
+// Name：getShareData
+// Function: Gets shared data
+// Number of parameters: 1
+// Parameter type: string
+// Detailed parameter explanation: key - keyword
+// Return value: shared data
+[Example] let t = getShareData('TEXT_HELLO')
+
+// Name：removeShareData
+// Function: deletes shared data
+// Number of parameters: 1
+// Parameter type: string
+// Detailed parameter explanation: key - keyword
+// Return value: old data
+[Example] let oldt = removeShareData('TEXT_HELLO')
+
+// Name：setCommandDescribe
+// Function: Sets a command description
+// Number of parameters: 2
+// Parameter type: string, string
+// Detailed parameter explanation: cmd - command, description - command description
+// Note: In the case of postponed registration, the client interface may not be changed
+[Example] setCommandDescribe('cmdname', 'cmddescription')
+
+// Name：addBeforeActListener
+// Function: Adds a listener before the player event is loaded
+// Number of parameters: 2
+// Parameter type: string, function object
+// Detailed parameter explanation: key - keyword for registration, func - callback function object for event trigger
+[Example] addBeforeActListener('onChat', function (e){ log(e) })
+
+// Name：removeBeforeActListener
+// Function: Removes player event listener
+// Number of parameters: 2
+// Parameter type: string, function object
+// Detailed parameter explanation: key - registration keyword, oldfunc - removed callback function object
+// Return value: whether the removal was successful
+[Example] let v = removeBeforeActListener('onChat', lis)
+
+// Name：addAfterActListener
+// Function: Adds a listener after the player event is loaded
+// Number of parameters: 2
+// Parameter type: string, function object
+// Detailed parameter explanation: key - keyword for registration, func - callback function object for event trigger
+[Example] addAfterActListener('onChat', function (e){ log(e) })
+
+// Name：removeAfterActListener
+// Function: Removes the listener after the player event is loaded
+// Number of parameters: 2
+// Parameter type: string, function object
+// Detailed parameter explanation: key - registration keyword, oldfunc - removed callback function object
+// Return value: whether the removal was successful
+[Example] let v = removeAfterActListener('onChat', lis)
+
+// Name：runcmd
+// Function: executes cmd command
+// Number of parameters: 1
+// Parameter type: string
+// Detailed parameter explanation: cmd - grammatically correct MC command
+// Return value: whether it is executed normally
+[Example] let r = runcmd('w @a Hello world!')
+
+// Name：getOnLinePlayers
+// Function：Gets a list of online players
+// Number of parameters: 0
+// Return value: Json string of the player list
+[Example] let v = getOnLinePlayers()
+
+// Name：getStructure
+// Function：Gets a structure
+// Number of parameters: 5
+// Parameter type: integer, string, string, Boolean, Boolean
+// Detailed parameters: dimensionid - dimension, posa - coordinate JSON string, posb - coordinate JSON string, exent - whether to export entities, exblk - whether to export blocks
+// Return value: structure json string
+[Example] let d = getStructure(0, '{"x":0, "y":4, "z":0}', '{"x":10, "y":14, "z":10}', false, true)
+
+// Name：setStructure
+// Function：Sets a structure to the specified location
+// Number of parameters: 6
+// Parameter type: string, integer, string, integer, boolean, boolean
+// Detailed parameters: strnbt - structure JSON string, dimensionid - dimension, posa - starting point coordinate JSON string, rot - rotation type, exent - whether to import entities, exblk - whether to import blocks
+// Return value: whether the setting is successful
+[Example] let r = setStructure(fileReadAllText('data.json'), 0, '{"x":0, "y":4, "z":0}', 0, true, true)
+
+// Name：reNameByUuid
+// Function：Renames a specified player name
+// Number of parameters: 2
+// Parameter type: string, string
+// Detailed parameters: uuid - the uuid string of the online player, newName - the new name
+// Return value: Whether the naming is successful
+// (Note: This function may not change the actual display name of the client)
+[Example] let r = reNameByUuid('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '[IDIOT KING] qIMIXERIp')
+
+// Name：getPlayerAbilities
+// Function：Gets player ability table
+// Number of parameters: 1
+// Parameter type: string
+// Detailed parameter explanation: uuid - the uuid string of the online player
+// Return value: ability json string
+[Example] let a = getPlayerAbilities('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9')
+
+// Name：setPlayerAbilities
+// Function：Sets player ability table
+// Number of parameters: 2
+// Parameter type: string, string
+// Detailed parameter explanation: uuid - uuid string of online players, newAbilities - new ability json data string
+// Return value: whether the setting is successful
+// (Note: This function may not change the actual display ability of the client)
+[Example] let r = setPlayerAbilities('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '{"opencontainers": false}')
+
+// Name：getPlayerAttributes
+// Function：Gets the player attribute table
+// Number of parameters: 1
+// Parameter type: string
+// Detailed parameter explanation: uuid - the uuid string of the online player
+// Return value: attribute json string
+[Example] let t = getPlayerAttributes('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9')
+
+// Name：setPlayerTempAttributes
+// Function：Sets player attribute temporary value table
+// Number of parameters: 2
+// Parameter type: string, string
+// Detailed parameter explanation: uuid - the uuid string of the online player, newTempAttributes - the new attribute temporary value json data string
+// Return value: whether the setting is successful
+// (Note: This function may not change the actual display value of the client)
+[Example] let r = setPlayerTempAttributes('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '{"hunger": 10}')
+
+// Name：getPlayerMaxAttributes
+// Function：Gets the player attribute upper limit table
+// Number of parameters: 1
+// Parameter type: string
+// Detailed parameter explanation: uuid - the uuid string of the online player
+// Return value: attribute upper limit json string
+[Example] let m = getPlayerMaxAttributes('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9')
+
+// Name：setPlayerMaxAttributes
+// Function：Sets player attribute upper limit table
+// Number of parameters: 2
+// Parameter type: string, string
+// Detailed parameter explanation: uuid - the uuid string of the online player, newMaxAttributes - the new attribute upper limit json data string
+// Return value: whether the setting is successful
+// (Note: This function may not change the actual display value of the client)
+[Example] let r = setPlayerMaxAttributes('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '{"maxhealth": 200}')
+
+// Name：getPlayerItems
+// Function：Gets a list of all items of the player
+// Number of parameters: 1
+// Parameter type: string
+// Detailed parameter explanation: uuid - the uuid string of the online player
+// Return value: item list json string
+[Example] let t = getPlayerItems('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9')
+
+// Name：getPlayerSelectedItem
+// Function：Get the player's currently selected item information
+// Number of parameters: 1
+// Parameter type: string
+// Detailed parameter explanation: uuid - the uuid string of the online player
+// Return value: the currently selected item information json string
+[Example] let i = getPlayerSelectedItem('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9')
+
+// Name：setPlayerItems
+// Function：Sets the player's list of all items
+// Number of parameters: 2
+// Parameter type: string, string
+// Detailed parameters: uuid-the uuid string of the online player, newItems - the json data string of the new item list
+// Return value: whether the setting is successful
+// (Note: The actual items in the game may not be changed under certain conditions)
+[Example] let r = setPlayerItems('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9','{"Offhand":{"tt":9,"tv":[{"tt":10,"tv":[{"ck":"Count","cv":{"tt":1,"tv":1}},{"ck":"Damage","cv":{"tt":2,"tv":0}},{"ck":"Name","cv":{"tt":8,"tv":"minecraft:trident"}},{"ck":"tag","cv":{"tt":10,"tv":[{"ck":"ench","cv":{"tt":9,"tv":[{"tt":10,"tv":[{"ck":"id","cv":{"tt":2,"tv":7}},{"ck":"lvl","cv":{"tt":2,"tv":8888}}]}]}}]}}]}]}}')
+
+// Name：addPlayerItemEx
+// Function：Adds an item to the player
+// Number of parameters: 2
+// Parameter type: string, string
+// Detailed parameter explanation: uuid-the uuid string of the online player, item-the item json data string
+// Return value: whether the addition is successful
+// (Note: The actual items in the game may not be changed under certain conditions)
+[Example] let r = setPlayerItems('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '{"tt":10,"tv":[{"ck":"Count","cv":{"tt":1,"tv":1}},{"ck":"Damage","cv":{"tt":2,"tv":0}},{"ck":"Name","cv":{"tt":8,"tv":"minecraft:trident"}},{"ck":"tag","cv":{"tt":10,"tv":[{"ck":"ench","cv":{"tt":9,"tv":[{"tt":10,"tv":[{"ck":"id","cv":{"tt":2,"tv":10}},{"ck":"lvl","cv":{"tt":2,"tv":9999}}]}]}}]}}]}')
+
+// Name：addPlayerItem
+// Function：Adds an item to the player
+// Number of parameters: 4
+// Parameter type: string
+// Detailed parameter explanation: uuid - uuid string of online players, id - item id value, aux - item special value, count - quantity
+// Return value: whether the increase is successful
+// (Note: The actual items in the game may not be changed under certain conditions)
+[Example] let r = addPlayerItem('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', 9, 0, 32)
+
+// Name：getPlayerEffects
+// Function：获取玩家所有效果列表
+// Number of parameters: 1
+// 参数类型：字符串
+// 参数详解：uuid - 在线玩家的uuid字符串
+// 返回值：效果列表json字符串
+[Example] let e = getPlayerEffects('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9')
+
+// Name：setPlayerEffects
+// Function：设置玩家所有效果列表
+// Number of parameters: 2
+// 参数类型：字符串，字符串
+// 参数详解：uuid - 在线玩家的uuid字符串，newEffects - 新效果列表json数据字符串
+// 返回值：是否设置成功
+[Example] let r = setPlayerEffects('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '{"tt":9,"tv":[{"tt":10,"tv":[{"ck":"Ambient","cv":{"tt":1,"tv":0}},{"ck":"Amplifier","cv":{"tt":1,"tv":0}},{"ck":"DisplayOnScreenTextureAnimation","cv":{"tt":1,"tv":0}},{"ck":"Duration","cv":{"tt":3,"tv":3461}},{"ck":"DurationEasy","cv":{"tt":3,"tv":3461}},{"ck":"DurationHard","cv":{"tt":3,"tv":3461}},{"ck":"DurationNormal","cv":{"tt":3,"tv":3461}},{"ck":"Id","cv":{"tt":1,"tv":16}},{"ck":"ShowParticles","cv":{"tt":1,"tv":1}}]}]}')
+
+// Name：setPlayerBossBar
+// Function：设置玩家自定义血条
+// Number of parameters: 3
+// 参数类型：字符串，字符串，浮点型
+// 参数详解：uuid - 在线玩家的uuid字符串，title - 血条标题，percent - 血条百分比
+// 返回值：是否设置成功
+[Example] let r = setPlayerBossBar('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '欢迎来到梦之故里', 1.00)
+
+// Name：removePlayerBossBar
+// Function：清除玩家自定义血条
+// Number of parameters: 1
+// 参数类型：字符串
+// 参数详解：uuid - 在线玩家的uuid字符串
+// 返回值：是否清除成功
+[Example] let r = removePlayerBossBar('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9')
+
+// Name：setPlayerSidebar
+// Function：设置玩家自定义侧边栏临时计分板
+// Number of parameters: 3
+// 参数类型：字符串，字符串，字符串
+// 参数详解：uuid - 在线玩家的uuid字符串，title - 侧边栏标题，list - 列表字符串数组
+// 返回值：是否设置成功
+// （注：列表总是从第1行开始，总计不超过15行）
+[Example] let r = setPlayerSidebar('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '自定义侧边栏', '["第一行", "第二行", "我在哪行?    "]')
+
+// Name：removePlayerSidebar
+// Function：清除玩家自定义侧边栏
+// Number of parameters: 1
+// 参数类型：字符串
+// 参数详解：uuid - 在线玩家的uuid字符串
+// 返回值：是否清除成功
+[Example] let r = removePlayerSidebar('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9')
+
+// Name：getPlayerPermissionAndGametype
+// Function：获取玩家权限与游戏模式
+// Number of parameters: 1
+// 参数类型：字符串
+// 参数详解：uuid - 在线玩家的uuid字符串
+// 返回值：权限与模式的json字符串
+[Example] let t = getPlayerPermissionAndGametype('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9')
+
+// Name：setPlayerPermissionAndGametype
+// Function：设置玩家权限与游戏模式
+// Number of parameters: 2
+// 参数类型：字符串，字符串
+// 参数详解：uuid - 在线玩家的uuid字符串，newModes - 新权限或模式json数据字符串
+// 返回值：是否设置成功
+// （备注：特定条件下可能不会变更游戏内实际能力）
+[Example] let r = setPlayerPermissionAndGametype('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '{"gametype" : 3}')
+
+// Name：selectPlayer
+// Function：查询在线玩家基本信息
+// Number of parameters: 1
+// 参数类型：字符串
+// 参数详解：uuid - 在线玩家的uuid字符串
+// 返回值：玩家基本信息json字符串
+[Example] let e = selectPlayer('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9')
+
+// Name：transferserver
+// Function：传送玩家至指定服务器
+// Number of parameters: 3
+// 参数类型：字符串，字符串，整型
+// 参数详解：uuid - 在线玩家的uuid字符串，addr - 待传服务器，port - 端口
+// 返回值：是否传送成功
+[Example] let t = transferserver('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', 'www.xiafox.com', 19132)
+
+// Name：teleport
+// Function：传送玩家至指定坐标和维度
+// Number of parameters: 5
+// 参数类型：字符串，浮点型，浮点型，浮点型，整型
+// 参数详解：uuid - 在线玩家的uuid字符串，X - x，Y - y，Z - z，dimensionid - 维度ID
+// 返回值：是否传送成功
+[Example] let t = teleport('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', 10, 99, 10, 2)
+
+// Name：talkAs
+// Function：模拟玩家发送一个文本
+// Number of parameters: 2
+// 参数类型：字符串，字符串
+// 参数详解：uuid - 在线玩家的uuid字符串，msg - 待模拟发送的文本
+// 返回值：是否发送成功
+[Example] let t = talkAs('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '你好 js')
+
+// Name：runcmdAs
+// Function：模拟玩家执行一个指令
+// Number of parameters: 2
+// 参数类型：字符串，字符串
+// 参数详解：uuid - 在线玩家的uuid字符串，cmd - 待模拟执行的指令
+// 返回值：是否发送成功
+[Example] let t = runcmdAs('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '/me 你好 js')
+
+// Name：disconnectClient
+// Function：断开一个玩家的连接
+// Number of parameters: 2
+// 参数类型：字符串，字符串
+// 参数详解：uuid - 在线玩家的uuid字符串，tips - 断开提示（设空值则为默认值）
+// 返回值：是否成功断开连接
+[Example] let t = disconnectClient('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '这个消息来自测试')
+
+// Name：sendSimpleForm
+// Function：向指定的玩家发送一个简单表单
+// Number of parameters: 4
+// 参数类型：字符串，字符串，字符串，字符串
+// 参数详解：uuid - 在线玩家的uuid字符串，title - 表单标题，content - 内容，buttons - 按钮文本数组字符串
+// 返回值：创建的表单id，为 0 表示发送失败
+[Example] let fid = sendSimpleForm('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '致命选项', '请选择：', '["生存","死亡","求助"]')
+
+// Name：sendModalForm
+// Function：向指定的玩家发送一个模式对话框
+// Number of parameters: 5
+// 参数类型：字符串，字符串，字符串，字符串，字符串
+// 参数详解：uuid - 在线玩家的uuid字符串，title - 表单标题，content - 内容，button1 按钮1标题（点击该按钮selected为true），button2 按钮2标题（点击该按钮selected为false）
+// 返回值：创建的表单id，为 0 表示发送失败
+[Example] let fid = sendModalForm('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '没有第三个选项', '请选择：', '生存', '死亡')
+
+// Name：sendCustomForm
+// Function：向指定的玩家发送一个自定义表单
+// Number of parameters: 2
+// 参数类型：字符串，字符串
+// 参数详解：uuid - 在线玩家的uuid字符串，json - 自定义表单的json字符串（要使用自定义表单类型，参考nk、pm格式或minebbs专栏）
+// 返回值：创建的表单id，为 0 表示发送失败
+[Example] let fid = sendCustomForm('8f976e22-78bc-3fe1-8ee5-cf5ff56347b9', '{"content":[{"type":"label","text":"这是一个文本标签"},{"placeholder":"水印文本","default":"","type":"input","text":""},{"default":true,"type":"toggle","text":"开关~或许是吧"},{"min":0.0,"max":10.0,"step":2.0,"default":3.0,"type":"slider","text":"游标滑块！？"},{"default":1,"steps":["Step 1","Step 2","Step 3"],"type":"step_slider","text":"矩阵滑块？!"},{"default":1,"options":["Option 1","Option 2","Option 3"],"type":"dropdown","text":"如你所见，下拉框"}], "type":"custom_form","title":"这是一个自定义窗体"}')
+
+// Name：releaseForm
+// Function：放弃一个表单
+// Number of parameters: 1
+// 参数类型：整型
+// 参数详解：formid - 表单id
+// 返回值：是否释放成功
+//（备注：已被接收到的表单会被自动释放）
+[Example] let r = releaseForm(1000)
+
+// Name：request
+// Function：发起一个远程HTTP请求
+// Number of parameters: 4
+// 参数类型：字符串，字符串，字符串，函数对象
+// 参数详解：urlpath - 远程接口路径，mode - 访问方式，params - 附加数据，func - 获取结果回调
+[Example] request('http://www.baidu.com', 'GET', 'name=act', function(e){})
+
+// Name：setTimeout
+// Function：延时执行一条指令
+// Number of parameters: 2
+// 参数类型：字符串/函数，整型
+// 参数详解：code - 待延时执行的指令字符串/函数对象，millisec - 延时毫秒数
+[Example] setTimeout('log("你好 js")', 1000)
+
+// Name：setTimeout
+// Function：延时执行一条指令
+// Number of parameters: 2
+// 参数类型：字符串/函数，整型
+// 参数详解：code - 待延时执行的指令字符串/函数对象，millisec - 延时毫秒数
+[Example] setTimeout('log("你好 js")', 1000)
+
+// Name：mkdir
+// Function：创建文件夹
+// Number of parameters: 1
+// 参数类型：字符串
+// 参数详解：dirname - 待创建的文件夹路径
+// 返回值：True - 目录是否被创建成功/已存在，False - 创建失败
+[Example] let r = mkdir('C:\\newdir')
+
+// Name：getWorkingPath
+// Function：获取工作目录
+// Number of parameters: 0
+// 返回值：当前应用程序的工作目录
+[Example] let d = getWorkingPath()
+
+三、注册机制:
+
+/******************************** 注册接口及回调数据说明 ********************************/
+
+注册范Example：
+
+[Example] addBeforeActListener(key, function(e){})
+
+key - 关键字
+"onUseItem" - 使用物品回调
+e - 回传数据
+ playername - 玩家名字
+ dimension - 玩家所在维度
+ dimensionid - 玩家所在维度ID
+ isstand - 玩家是否双脚着地/悬空
+ XYZ - 玩家所处位置
+ position - 操作方块所在位置
+ itemid - 物品id
+ itemaux - 物品特殊值
+ itemname - 物品名称
+ RESULT - 原事件操作是否成功(仅限After事件)
+
+其中，对于注册Before事件的函数返回值决定了是否拦截该事件（非全部）。
+其它关键字类推。
+
+ "onServerCmd" - 后台指令监听
+ "onServerCmdOutput" - 后台指令输出信息监听
+ "onFormSelect" - 玩家选择GUI表单监听
+ "onUseItem" - 使用物品监听
+ "onMove" - 移动监听
+ "onAttack" - 攻击监听
+ "onPlacedBlock" - 放置方块监听
+ "onDestroyBlock" - 破坏方块监听
+ "onStartOpenChest" - 开箱监听
+ "onStartOpenBarrel" - 开桶监听
+ "onChangeDimension" - 切换维度监听
+ "onLoadName" - 加载名字监听
+ "onPlayerLeft" - 离开游戏监听
+ "onStopOpenChest" - 关箱监听
+ "onStopOpenBarrel" - 关桶监听
+ "onSetSlot" - 放入取出物品监听
+ "onMobDie" - 生物死亡监听
+ "onMobHurt" - 生物受伤监听
+ "onRespawn" - 玩家重生监听
+ "onInputText" - 玩家输入文本监听
+ "onInputCommand" - 玩家输入指令监听
+ "onBlockCmd" - 命令方块(矿车)执行指令监听
+ "onNpcCmd" - NPC执行指令监听
+ "onCommandBlockUpdate" - 玩家更新命令方块监听
+ "onLevelExplode" - 爆炸监听
+ "onChat" - 聊天监听
+ "onEquippedArmor" - 玩家切换护甲监听
+ "onLevelUp" - 玩家升级监听
